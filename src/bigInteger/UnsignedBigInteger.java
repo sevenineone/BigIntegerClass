@@ -131,7 +131,7 @@ public class UnsignedBigInteger {
         if (other.number.size() == 1 && other.number.get(0) == 0)
             throw new IllegalArgumentException("Maths error: Divider can't be zero");
         UnsignedBigInteger ans = new UnsignedBigInteger("");
-        if (this.compare(other) == 1){
+        if (this.compare(other) == 1) {
             ans.setUBIDigit(0);
             return ans;
         }
@@ -172,7 +172,7 @@ public class UnsignedBigInteger {
     public UnsignedBigInteger remainder
             (UnsignedBigInteger other) {
         UnsignedBigInteger ans = new UnsignedBigInteger("");
-        if (this.compare(other) == 1){
+        if (this.compare(other) == 1) {
             ans.setUBIDigit(0);
             return ans;
         }
@@ -198,5 +198,4 @@ public class UnsignedBigInteger {
                 "number=" + number +
                 '}';
     }
-
 }
