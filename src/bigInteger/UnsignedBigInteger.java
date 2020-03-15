@@ -9,6 +9,8 @@ public class UnsignedBigInteger {
 
     public UnsignedBigInteger(String number) {
         if (!number.matches("[0-9]*")) throw new IllegalArgumentException("Wrong format, it must be string");
+        if (number.length() > 1)
+        number = number.replaceFirst("[0]*", "");
         for (int i = number.length() - 1; i >= 0; i--) {
             this.number.add(Character.getNumericValue(number.charAt(i)));
         }
@@ -48,12 +50,12 @@ public class UnsignedBigInteger {
     }
 
     public int compare(UnsignedBigInteger other) {
-        if (number.size() < other.number.size()) return 1;
-        else if (number.size() > other.number.size()) return -1;
+        if (number.size() < other.number.size()) return -1;
+        else if (number.size() > other.number.size()) return 1;
         else {
             for (int i = number.size() - 1; i >= 0; i--)
-                if (number.get(i) > other.number.get(i)) return -1;
-                else if (number.get(i) < other.number.get(i)) return 1;
+                if (number.get(i) > other.number.get(i)) return 1;
+                else if (number.get(i) < other.number.get(i)) return -1;
             return 0;
         }
     }
@@ -62,22 +64,18 @@ public class UnsignedBigInteger {
         int c = 0;
         int i;
         UnsignedBigInteger ans = new UnsignedBigInteger("");
-        if (Math.max(number.size(), other.number.size()) == 1 && number.get(0) + other.number.get(0) < 10) {
-            ans.setUBIDigit(number.get(0) + other.number.get(0));
-        } else {
-            for (i = 0; i < Math.max(number.size(), Math.max(other.number.size(), 2)); i++) {
-                int a, b;
-                if (i >= number.size()) { // getOrDefault ???
-                    a = 0;
-                } else a = number.get(i);
-                if (i >= other.number.size()) {
-                    b = 0;
-                } else b = other.number.get(i);
+        for (i = 0; i < Math.max(number.size(), other.number.size()); i++) {
+            int a, b;
+            if (i >= number.size()) { // getOrDefault ???
+                a = 0;
+            } else a = number.get(i);
+            if (i >= other.number.size()) {
+                b = 0;
+            } else b = other.number.get(i);
 
-                c += a + b;
-                ans.setUBIDigit(c % 10);
-                c /= 10;
-            }
+            c += a + b;
+            ans.setUBIDigit(c % 10);
+            c /= 10;
         }
         if (c > 0)
             ans.setUBIDigit(c);
@@ -85,7 +83,7 @@ public class UnsignedBigInteger {
     }
 
     public UnsignedBigInteger sub(UnsignedBigInteger other) {
-        if (this.compare(other) == 1) throw new IllegalArgumentException("A must be bigger then B!");
+        if (this.compare(other) == -1) throw new IllegalArgumentException("A must be bigger then B!");
         UnsignedBigInteger C = new UnsignedBigInteger("");
         if (this.compare(other) == 0) {
             C.setUBIDigit(0);
@@ -127,11 +125,11 @@ public class UnsignedBigInteger {
         return C;
     }
 
-    public UnsignedBigInteger div(UnsignedBigInteger other) {
+    private UnsignedBigInteger divUBI(UnsignedBigInteger other, boolean h) {
         if (other.number.size() == 1 && other.number.get(0) == 0)
             throw new IllegalArgumentException("Maths error: Divider can't be zero");
         UnsignedBigInteger ans = new UnsignedBigInteger("");
-        if (this.compare(other) == 1) {
+        if (this.compare(other) == -1) {
             ans.setUBIDigit(0);
             return ans;
         }
@@ -144,8 +142,9 @@ public class UnsignedBigInteger {
             return ans;
         }
         for (int i = number.size() - 1; i >= 0; i--) {
+            if (divA.getUBIDigit(0) == 0 && divA.getUBISize() == 1) divA = space;
             divA.setUBIDigit(0, number.get(i));
-            if (divA.compare(other) == 1) {
+            if (divA.compare(other) == -1) {
                 if (ans.getUBISize() > 0) {
                     ans.setUBIDigit(0, 0);
                 }
@@ -155,7 +154,7 @@ public class UnsignedBigInteger {
             } else {
                 digit = 0;
                 divB = other;
-                while (divA.compare(divB) < 1) {
+                while (divB.compare(divA) < 1) {
 
                     divB = divB.sum(other);
                     digit++;
@@ -163,20 +162,28 @@ public class UnsignedBigInteger {
                 ans.setUBIDigit(0, digit);
                 divB = divB.sub(other);
                 divA = divA.sub(divB);
-                if (divA.getUBIDigit(0) == 0 && divA.getUBISize() == 1) divA = space;
             }
         }
-        return ans;
+        if (h) return ans;
+        else {
+            if (divA == space) {
+                return new UnsignedBigInteger("0");
+            } else return divA;
+        }
+    }
+
+    UnsignedBigInteger div(UnsignedBigInteger other) {
+        return this.divUBI(other, true);
     }
 
     public UnsignedBigInteger remainder
             (UnsignedBigInteger other) {
         UnsignedBigInteger ans = new UnsignedBigInteger("");
-        if (this.compare(other) == 1) {
+        if (this.compare(other) == -1) {
             ans.setUBIDigit(0);
             return ans;
         }
-        return this.sub(other.mul(this.div(other)));
+        return this.divUBI(other, false);
     }
 
     @Override

@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class UnsignedBigIntegerTests {
     private UnsignedBigInteger
-            a1 = new UnsignedBigInteger("4"), b1 = new UnsignedBigInteger("4"),
+            a1 = new UnsignedBigInteger("00004"), b1 = new UnsignedBigInteger("4"),
             a2 = new UnsignedBigInteger("123"), b2 = new UnsignedBigInteger("3"),
             a3 = new UnsignedBigInteger("12"), b3 = new UnsignedBigInteger("34"),
             a4 = new UnsignedBigInteger("153513513413413"), b4 = new UnsignedBigInteger("1351351"),
@@ -18,11 +18,11 @@ public class UnsignedBigIntegerTests {
     @Test
     public void compareTest() {
         assertEquals(0, a1.compare(b1));
-        assertEquals(-1, a2.compare(b2));
-        assertEquals(1, a3.compare(b3));
-        assertEquals(-1, a4.compare(b4));
-        assertEquals(-1, a5.compare(b5));
-        assertEquals(1, a6.compare(b6));
+        assertEquals(1, a2.compare(b2));
+        assertEquals(-1, a3.compare(b3));
+        assertEquals(1, a4.compare(b4));
+        assertEquals(1, a5.compare(b5));
+        assertEquals(-1, a6.compare(b6));
     }
 
     @Test
