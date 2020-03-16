@@ -10,7 +10,7 @@ public class UnsignedBigInteger {
     public UnsignedBigInteger(String number) {
         if (!number.matches("[0-9]*")) throw new IllegalArgumentException("Wrong format, it must be string");
         if (number.length() > 1)
-        number = number.replaceFirst("[0]*", "");
+            number = number.replaceFirst("[0]*", "");
         for (int i = number.length() - 1; i >= 0; i--) {
             this.number.add(Character.getNumericValue(number.charAt(i)));
         }
