@@ -16,6 +16,7 @@ public class UnsignedBigInteger {
         }
     }
 
+
     private void setUBIDigit(int digit) {
         this.number.add(digit);
     }
